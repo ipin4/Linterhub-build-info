@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<dom-module id="web-socket">
+  <script>
+    class WebSocketElement extends Polymer.Element {
+      static get is() { return 'web-socket'; }
+      static get properties() {
+        return {
+          socket: {
+            type: Object
+          },
+          url: {
+            type: String
+          },
+          message: {
+            type: String
+          },
+          response: {
+            type: Object,
+            notify: true
+          },
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.socket = new WebSocket(this.url);
+      }
+
+      generateRequest() {
+        var that = this;
+        if(this.socket==undefined){
+          setTimeout(function(){
+            that.generateRequest()
+          },300)
+        } else {
+          this.socket.send(that.message);
+          this.socket.onmessage = function(e) {
+            console.log(e.data)
+            that.response = JSON.parse(e.data);
+          }
+          this.socket.onmessage = this.onResponse.bind(this);
+        }
+      }
+
+      onResponse(event) {
+        var data = JSON.parse(event.data);
+        this.dispatchEvent(new CustomEvent('response', {detail: data}));
+      }
+
+    }
+    window.customElements.define(WebSocketElement.is, WebSocketElement);
+  </script>
+</dom-module>

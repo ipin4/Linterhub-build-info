@@ -1,0 +1,162 @@
+<html><head><link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="job-log.html">
+<link rel="import" href="view-config.html">
+
+</head><body><dom-module id="my-app">
+  <template>
+    <style>
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--paper-grey-900);
+        --paper-tab-ink: var(--paper-grey-900);
+        -webkit-font-smoothing: antialiased;
+        width: 80%;
+        margin: 0 auto;
+      }
+      paper-tab[link] a {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        color: var(--paper-grey-900);
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+      .header {
+        width: 100%;
+        height: 4em;
+        background-color: rgb(230,230,230);
+        margin-bottom: 2em;
+      }
+      .header img {
+        height: 56%;
+        width: auto;
+        margin: .55em .8em 0 0;
+        float: left;
+      }
+      .header p {
+        display: inline-block;
+        font-size: 1.3em;
+        font-weight: 400;
+        margin-top: .85em;
+      }
+      .container {
+        width: 80%;
+        height: 5em;
+        margin: 0 auto;
+      }
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+
+    <div class="header">
+      <div class="container">
+        <img src="../../data/images/logo.png" alt="">
+        <p>Linterhub build info</p>
+      </div>
+    </div>
+
+    <nav>
+      <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <paper-tabs selected="[[page]]" attr-for-selected="name">
+            <paper-tab link="" name="job-log" ==""><a name="job-log" href="/job-log">Job log</a></paper-tab>
+            <paper-tab link="" name="view-config"><a name="view-config" href="/view-config">View config</a></paper-tab>
+        </paper-tabs>
+      </iron-selector>
+    </nav>
+
+    <section>
+      <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <job-log name="job-log" id="jobLog"></job-log>
+        <view-config name="view-config" id="viewConfig"></view-config>
+        <view404 name="view404"></view404>
+      </iron-pages>
+    </section>
+
+  </template>
+
+  <script>var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MainPage = function (_Polymer$Element) {
+  _inherits(MainPage, _Polymer$Element);
+
+  function MainPage() {
+    _classCallCheck(this, MainPage);
+
+    return _possibleConstructorReturn(this, (MainPage.__proto__ || Object.getPrototypeOf(MainPage)).apply(this, arguments));
+  }
+
+  _createClass(MainPage, [{
+    key: '_routePageChanged',
+    value: function _routePageChanged(page) {
+      if (page === undefined) {
+        return;
+      }
+
+      this.page = page || 'job-log';
+    }
+  }, {
+    key: '_pageChanged',
+    value: function _pageChanged(page) {
+      this._updateAjax(page);
+      var resolvedPageUrl = this.resolveUrl(page + '.html');
+      Polymer.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+    }
+  }, {
+    key: '_updateAjax',
+    value: function _updateAjax(page) {
+      if (page == "job-log") {
+        console.log('job-log is update');
+        this.$.jobLog.$.buildAjax.generateRequest();
+      }
+      if (page == "view-config") {
+        console.log('view-config is update');
+        this.$.viewConfig.$.configAjax.generateRequest();
+      }
+    }
+  }, {
+    key: '_showPage404',
+    value: function _showPage404() {
+      this.page = 'view404';
+    }
+  }], [{
+    key: 'is',
+    get: function get() {
+      return 'my-app';
+    }
+  }, {
+    key: 'properties',
+    get: function get() {
+      return {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        }
+      };
+    }
+  }, {
+    key: 'observers',
+    get: function get() {
+      return ['_routePageChanged(routeData.page)'];
+    }
+  }]);
+
+  return MainPage;
+}(Polymer.Element);
+
+window.customElements.define(MainPage.is, MainPage);</script>
+</dom-module>
+</body></html>

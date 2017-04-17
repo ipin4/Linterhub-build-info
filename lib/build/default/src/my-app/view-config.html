@@ -1,0 +1,85 @@
+<html><head><link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="shared-styles.html">
+
+</head><body><dom-module id="view-config">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      p.braket {
+        padding: 3px 0;
+        margin: 0;
+      }
+      p.config {
+        padding: 3px 15px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 1.3em;
+        font-weight: normal;
+      }
+    </style>
+    <iron-ajax id="configAjax" url="../../data/json/config.json" handle-as="json" loading="{{loading}}" on-response="getData" last-response="{{response}}"></iron-ajax>
+    <div hidden$="[[!loading]]">
+      <div class="overlay">
+        <paper-spinner-lite active="{{loading}}"></paper-spinner-lite>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Config info</h2>
+      <div class="textSection" id="textSection"></div>
+    </div>
+  </template>
+
+  <script>var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ViewConfig = function (_Polymer$Element) {
+  _inherits(ViewConfig, _Polymer$Element);
+
+  function ViewConfig() {
+    _classCallCheck(this, ViewConfig);
+
+    return _possibleConstructorReturn(this, (ViewConfig.__proto__ || Object.getPrototypeOf(ViewConfig)).apply(this, arguments));
+  }
+
+  _createClass(ViewConfig, [{
+    key: 'getData',
+    value: function getData(e) {
+      var responseData = e.detail.response;
+      var textSection = this.$.textSection;
+      textSection.innerHTML = "";
+      for (var i = 0; i < responseData.config.length; i++) {
+        var elementContent = responseData.config[i].text.replace(/\'/g, '"');
+        var textElement = document.createElement('p');
+        if (elementContent == "{" || elementContent == "}") {
+          textElement.className = 'braket';
+        } else {
+          textElement.className = 'config';
+        }
+        textElement.textContent = elementContent;
+        textSection.appendChild(textElement);
+      }
+    }
+  }], [{
+    key: 'is',
+    get: function get() {
+      return 'view-config';
+    }
+  }]);
+
+  return ViewConfig;
+}(Polymer.Element);
+
+window.customElements.define(ViewConfig.is, ViewConfig);</script>
+</dom-module>
+</body></html>

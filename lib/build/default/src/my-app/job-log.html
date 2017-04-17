@@ -1,0 +1,143 @@
+<html><head><link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="shared-styles.html">
+
+</head><body><dom-module id="job-log">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      p.devider {
+        width: 100%;
+        height: 32px;
+        color: black;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 32px;
+        background-color: #e0e0e0;
+      }
+      .section {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 32px;
+        margin-top: 5px;
+        padding: 0 18px;
+        font-size: 14px;
+        line-height: 32px;
+        color: #231f20;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+      }
+      .selectIcon {
+        position: absolute;
+        top: 50%;
+        margin: -8px;
+        left: 0;
+        width:16px;
+        height: 16px;
+        background-image: url("../../data/images/expand_arrow1600.png");
+        background-size: auto 50%;
+        background-position: 4px center;
+        background-repeat: no-repeat;
+        transform-origin: center;
+        background-color: #e0e0e0;
+        transform: rotate(-90deg);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .rotation {
+        transform: rotate(0deg);
+      }
+
+      iron-collapse {
+        outline: none;
+      }
+    </style>
+
+    <iron-ajax id="buildAjax" url="../../data/json/build.json" handle-as="json" loading="{{loading}}" last-response="{{responseList}}"></iron-ajax>
+    <div hidden$="[[!loading]]">
+      <div class="overlay">
+        <paper-spinner-lite active="{{loading}}"></paper-spinner-lite>
+      </div>
+    </div>
+
+    <template is="dom-repeat" items="[[responseList.posts]]">
+      <div class="card">
+        <p class="devider">[[item.section]]</p>
+
+        <template is="dom-repeat" items="[[item.info]]" id="selTemplate">
+          <div class="section" aria-controls="collapse" on-click="toggle">
+            <div class="selectIcon"></div>[[item.title]]
+          </div>
+          <iron-collapse id="collapse" tabindex="0">
+            <div class="textSection">[[item.text]]</div>
+          </iron-collapse>
+        </template>
+
+      </div>
+    </template>
+
+  </template>
+
+  <script>var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var JobLog = function (_Polymer$Element) {
+  _inherits(JobLog, _Polymer$Element);
+
+  function JobLog() {
+    _classCallCheck(this, JobLog);
+
+    return _possibleConstructorReturn(this, (JobLog.__proto__ || Object.getPrototypeOf(JobLog)).apply(this, arguments));
+  }
+
+  _createClass(JobLog, [{
+    key: 'toggle',
+    value: function toggle(e) {
+      var collapseElement = e.target.nextElementSibling;
+      var rotateElement = e.target.childNodes[1];
+      if (collapseElement === null) {
+        rotateElement = e.target;
+        collapseElement = rotateElement.parentNode.nextElementSibling;
+      }
+      collapseElement.toggle();
+      rotateElement.classList.toggle('rotation');
+    }
+  }, {
+    key: 'connectedCallback',
+    value: function connectedCallback() {
+      _get(JobLog.prototype.__proto__ || Object.getPrototypeOf(JobLog.prototype), 'connectedCallback', this).call(this);
+    }
+  }], [{
+    key: 'is',
+    get: function get() {
+      return 'job-log';
+    }
+  }, {
+    key: 'properties',
+    get: function get() {
+      return {};
+    }
+  }]);
+
+  return JobLog;
+}(Polymer.Element);
+
+window.customElements.define(JobLog.is, JobLog);</script>
+</dom-module>
+</body></html>

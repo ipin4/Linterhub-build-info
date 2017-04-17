@@ -1,0 +1,22 @@
+{
+  "config": [
+    {
+      "text": "{"
+    },
+    {
+      "text": "'language': 'ruby',"
+    },
+    {
+      "text": "'group': 'stable',"
+    },
+    {
+      "text": "'dist': 'precise',"
+    },
+    {
+      "text": "'os': 'linux'"
+    },
+    {
+      "text": "}"
+    }
+  ]
+}
