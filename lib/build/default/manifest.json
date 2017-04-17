@@ -1,7 +1,0 @@
-{
-  "name": "my-polymer-app",
-  "short_name": "my-polymer-app",
-  "description": "",
-  "start_url": "/?homescreen=1",
-  "display": "standalone"
-}
