@@ -1,6 +1,6 @@
 # \<my-polymer-app\>
 
-Thats app
+It's one page app which represent build info.
 
 ## Install the Polymer-CLI
 
