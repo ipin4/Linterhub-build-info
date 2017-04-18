@@ -71,8 +71,13 @@
         this.notResponse = 0;
         var that = this;
         this.timer = setInterval(function(){
-          if (that.notResponse>5) that.onError();
-          else that.notResponse++
+          if (that.notResponse>5) {
+            that.onError();
+          }
+          else {
+            that.notResponse++;
+            that.socket = new WebSocket(that.url);
+          }
         }, 1000)
         var data = 'Try send message';
         this.dispatchEvent(new CustomEvent('send', {detail: data}));
