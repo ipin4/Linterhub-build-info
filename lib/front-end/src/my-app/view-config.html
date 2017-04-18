@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="error-page.html">
 
 <dom-module id="view-config">
   <template>
@@ -9,19 +10,19 @@
       :host {
         display: block;
       }
-      h2 {
-        font-size: 1.3em;
-        font-weight: normal;
-      }
     </style>
+
     <iron-ajax
       id="configAjax"
-      url="../../data/json/config.json"
+      url="../data/json/config.json"
       handle-as="json"
       loading="{{loading}}"
       on-response="startLoader"
       on-request="endLoader"
+      on-error="getError"
       last-response="{{response}}"></iron-ajax>
+
+    <error-page hidden="{{!errorText}}">{{errorText}}</error-page>
 
     <div class="card" hidden="{{loading}}">
       <h2>Config info</h2>
@@ -51,8 +52,25 @@
             notify: true,
             reflectToAttribute: true,
             value: 1
+          },
+          errorText: {
+            value: String,
+            notify: true
+          },
+          loading: {
+            type: Boolean
           }
         }
+      }
+
+      getError(event) {
+        if (event.detail.error.toString() == '[object ProgressEvent]') {
+          this.errorText = 'Internet disconnected'
+        } else {
+          this.errorText = event.detail.error;
+        }
+        this.loading = true;
+        this.responsed = 1;
       }
 
       startLoader() {

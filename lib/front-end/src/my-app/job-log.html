@@ -64,7 +64,12 @@
       id="buildWebSocket"
       url="ws://localhost:8082"
       message="getJobInfo"
-      on-response="getData"></web-socket>
+      on-response="getData"
+      on-error="getError"
+      on-closed="getError"
+      on-send="startLoadData"></web-socket>
+
+    <error-page hidden="{{!errorText}}">{{errorText}}</error-page>
 
     <array-selector id="headerSelector" items="{{textHeaders}}" selected="{{selectedHeaders}}" multi></array-selector>
     <array-selector id="subHeaderSelector" items="{{textSubHeaders}}" selected="{{selectedSubHeaders}}" multi></array-selector>
@@ -114,8 +119,7 @@
           responsed: {
             type: String,
             notify: true,
-            reflectToAttribute: true,
-            value: 1
+            reflectToAttribute: true
           },
           textHeaders: {
             type: Array,
@@ -128,8 +132,25 @@
           textConsole: {
             type: Array,
             value: []
+          },
+          errorText: {
+            type: String,
+            notify: true
           }
         }
+      }
+
+      startLoadData() {
+        this.responsed = 0;
+      }
+
+      getError(event) {
+        if (event.type == 'closed') {
+          this.errorText = 'Server is do not respond';
+        } else {
+          this.errorText = event.detail;
+        }
+        this.responsed = 1;
       }
 
       getData(responseAnswer) {
@@ -175,6 +196,7 @@
 
       resetTemplate() {
         this.lineNumber = 0;
+        this.errorText = '';
         this.textHeaders.splice(0, this.textHeaders.length);
         this.textSubHeaders.splice(0, this.textSubHeaders.length);
         this.textConsole.splice(0, this.textConsole.length);

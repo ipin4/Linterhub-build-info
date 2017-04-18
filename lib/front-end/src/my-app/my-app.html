@@ -172,7 +172,10 @@
           this.$.jobLog.resetTemplate();
           this.$.jobLog.$.buildWebSocket.generateRequest();
         }
-        if (page=="view-config") this.$.viewConfig.$.configAjax.generateRequest();
+        if (page=="view-config") {
+          this.$.viewConfig.errorText = '';
+          this.$.viewConfig.$.configAjax.generateRequest();
+        }
       }
 
       _showPage404() {

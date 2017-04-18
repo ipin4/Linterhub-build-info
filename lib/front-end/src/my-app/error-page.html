@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="error-page">
+  <template>
+    <style include="shared-styles">
+      .error-container {
+        width: 100%;
+        background-color: var(--paper-grey-100);
+      }
+      .error-text::before {
+        display: block;
+        content: "";
+        width: 2em;
+        height: 2px;
+        border-bottom: 2px solid #231f20;
+      }
+      .error-text {
+        width: 40%;
+      }
+      @media screen and (max-width: 1350px) {
+
+      }
+    </style>
+    <div class="card">
+      <div class="error-container">
+        <h2>Something went wrong...</h2>
+        <div class="error-text">
+          <p>
+            <slot></slot>
+          </p>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    class errorPage extends Polymer.Element {
+      static get is() { return 'error-page'; }
+
+      static get properties() {
+        return {}
+      }
+    }
+
+    window.customElements.define(errorPage.is, errorPage);
+  </script>
+</dom-module>
