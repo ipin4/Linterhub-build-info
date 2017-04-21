@@ -10,6 +10,7 @@
 
 <link rel="import" href="job-log.html">
 <link rel="import" href="view-config.html">
+<link rel="import" href="error-page.html">
 
 <dom-module id="my-app">
   <template>
@@ -120,7 +121,7 @@
             name="view-config"
             id="viewConfig"
             responsed="{{cfgAnswer}}"></view-config>
-        <view404 name="view404"></view404>
+        <error-page name="view404">Error 404. Page  not found.</error-page>
       </iron-pages>
     </section>
 

@@ -5,7 +5,7 @@
       static get is() { return 'web-socket'; }
       static get properties() {
         return {
-          socket: {
+          _socket: {
             type: Object
           },
           url: {
@@ -13,10 +13,6 @@
           },
           message: {
             type: String
-          },
-          response: {
-            type: Object,
-            notify: true
           },
           notResponse: {
             type: Number,
@@ -28,55 +24,80 @@
 
       ready() {
         super.ready();
-        this.socket = new WebSocket(this.url);
+        this.closeConnection();
+        this.openConnection();
+      }
+
+      openConnection() {
+        this._socket = new WebSocket(this.url);
+        this._setListeners();
+      }
+
+      closeConnection() {
+        if (this._socket) {
+          this._socket.close();
+          this._socket = null;
+        }
+      }
+
+      _setListeners() {
+        var that = this;
+        if (this._socket===undefined) {
+          setTimeout(function(){
+            that._setListeners();
+          },300)
+        } else {
+          this._socket.onclose = this._onClosed.bind(this);
+          this._socket.onerror = this._onError.bind(this);
+          this._socket.onopen = this._onOpen.bind(this);
+          this._socket.onmessage = this._onResponse.bind(this);
+        }
       }
 
       generateRequest() {
         var that = this;
-        if(this.socket==undefined){
+        if (this._socket===undefined) {
           setTimeout(function(){
-            that.generateRequest()
+            that.generateRequest();
           },300)
         } else {
-          this.socket.onerror = this.onError.bind(this);
-          this.socket.onclose = this.onClosed.bind(this);
-          this.socket.onopen = function() {console.log('open')}
-          this.onSend();
-          this.socket.send(that.message);
-          this.socket.onmessage = function(event) {
-            that.response = JSON.parse(event.data);
-          }
-          this.socket.onmessage = this.onResponse.bind(this);
+          this._socket.send(this.message);
+          this._onSend();
         }
       }
 
-      onResponse(event) {
+      _onOpen() {
+        var data;
+        this.dispatchEvent(new CustomEvent('open', {detail: data}));
+      }
+
+      _onResponse(event) {
         clearInterval(this.timer);
         var data = JSON.parse(event.data);
         this.dispatchEvent(new CustomEvent('response', {detail: data}));
       }
 
-      onError(event) {
+      _onError(event) {
         clearInterval(this.timer);
         var data = 'Server is do not respond';
         this.dispatchEvent(new CustomEvent('error', {detail: data}));
       }
 
-      onClosed(event) {
+      _onClosed(event) {
         var data = event;
-        this.dispatchEvent(new CustomEvent('closed', {detail: data}));
+        this.dispatchEvent(new CustomEvent('close', {detail: data}));
       }
 
-      onSend() {
+      _onSend() {
         this.notResponse = 0;
         var that = this;
         this.timer = setInterval(function(){
           if (that.notResponse>5) {
-            that.onError();
+            that._onError();
           }
           else {
             that.notResponse++;
-            that.socket = new WebSocket(that.url);
+            that.openConnection();
           }
         }, 1000)
         var data = 'Try send message';
