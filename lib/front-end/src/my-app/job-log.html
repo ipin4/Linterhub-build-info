@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="web-socket.html">
@@ -77,7 +78,7 @@
     <array-selector id="textSelector" items="{{textConsole}}" selected="{{selectedText}}" multi></array-selector>
 
       <template id="globalTemplate" is="dom-repeat" items="{{selectedHeaders}}" as="headerRoot">
-          <div class="card">
+          <paper-material class="card" elevation="1">
             <p class="devider">[[headerRoot.header]]</p>
 
             <template id="subHeaderTemplate" is="dom-repeat" items="{{selectedSubHeaders}}" as="subheaderRoot">
@@ -101,7 +102,7 @@
               </template>
             </template>
 
-          </div>
+          </paper-material>
       </template>
 
     </template>

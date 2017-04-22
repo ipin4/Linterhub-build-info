@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="error-page.html">
@@ -25,7 +26,7 @@
 
     <error-page hidden="{{!errorText}}">{{errorText}}</error-page>
 
-    <div class="card" hidden="{{loading}}">
+    <paper-material elevation="1" class="card" hidden="{{loading}}">
       <h2>Config info</h2>
       <div class="textSection" id="textSection">
         <template is="dom-repeat" items=[[response.config]]>
@@ -35,7 +36,7 @@
           </div>
         </template>
       </div>
-    </div>
+    </paper-material>
   </template>
 
   <script>

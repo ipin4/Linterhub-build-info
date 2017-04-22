@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 
+<link rel="import" href="data-header.html">
 <link rel="import" href="job-log.html">
 <link rel="import" href="view-config.html">
 <link rel="import" href="error-page.html">
@@ -88,6 +89,8 @@
       </div>
     </div>
 
+    <data-header></data-header>
+
     <nav>
       <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
         <paper-tabs selected="[[page]]" attr-for-selected="name">
@@ -158,10 +161,10 @@
         this._updateAjax(page);
         var resolvedPageUrl = this.resolveUrl(page + '.html');
         Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+          resolvedPageUrl,
+          null,
+          this._showPage404.bind(this),
+          true);
       }
 
       _updateAjax(page) {
