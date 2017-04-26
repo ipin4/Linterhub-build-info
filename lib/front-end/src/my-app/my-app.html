@@ -158,7 +158,7 @@
       }
 
       _pageChanged(page) {
-        this._updateAjax(page);
+        this._updateRequest(page);
         var resolvedPageUrl = this.resolveUrl(page + '.html');
         Polymer.importHref(
           resolvedPageUrl,
@@ -167,7 +167,7 @@
           true);
       }
 
-      _updateAjax(page) {
+      _updateRequest(page) {
         if (page=="job-log") {
           if(this.$.jobLog.responsed=='0'){
             if(this.connected) return
