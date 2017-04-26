@@ -6,7 +6,8 @@
       static get properties() {
         return {
           _socket: {
-            type: Object
+            type: Object,
+            observer: '_setListeners'
           },
           url: {
             type: String
@@ -30,7 +31,6 @@
 
       openConnection() {
         this._socket = new WebSocket(this.url);
-        this._setListeners();
       }
 
       closeConnection() {
@@ -42,21 +42,17 @@
 
       _setListeners() {
         var that = this;
-        if (this._socket===undefined) {
-          setTimeout(function(){
-            that._setListeners();
-          },300)
-        } else {
+        if (this._socket!==undefined && this._socket!==null) {
           this._socket.onclose = this._onClosed.bind(this);
           this._socket.onerror = this._onError.bind(this);
           this._socket.onopen = this._onOpen.bind(this);
           this._socket.onmessage = this._onResponse.bind(this);
-        }
+        } 
       }
 
       generateRequest() {
         var that = this;
-        if (this._socket===undefined) {
+        if (this._socket===undefined || this._socket.readyState==0) {
           setTimeout(function(){
             that.generateRequest();
           },300)
