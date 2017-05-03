@@ -1,132 +1,121 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="data-header.html">
-<link rel="import" href="job-log.html">
-<link rel="import" href="view-config.html">
+<link rel="import" href="view1.html">
+<link rel="import" href="view2.html">
+<link rel="import" href="view3.html">
 <link rel="import" href="error-page.html">
 
 <dom-module id="my-app">
   <template>
     <style>
-      paper-tabs {
-        --paper-tabs-selection-bar-color: var(--paper-grey-900);
-        --paper-tab-ink: var(--paper-grey-900);
-        -webkit-font-smoothing: antialiased;
-        width: 80%;
-        margin: 0 auto;
-      }
-      paper-tab[link] a {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        color: var(--paper-grey-900);
-        text-transform: uppercase;
-        text-decoration: none;
-      }
-      .header {
+      app-toolbar {
         width: 100%;
         height: 4em;
+        padding: 0 1em; 
         background-color: rgb(230,230,230);
         margin-bottom: 2em;
       }
-      .header img {
+      app-toolbar img {
         height: 56%;
         width: auto;
-        margin: .55em .8em 0 0;
-        float: left;
+        margin-right: 1em;
       }
-      .header p {
-        display: inline-block;
-        font-size: 1.3em;
-        font-weight: 400;
-        margin-top: .85em;
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
       }
-      .container {
-        width: 80%;
-        height: 5em;
-        margin: 0 auto;
+      app-drawer {
+        --app-drawer-width: 210px;
+        --app-drawer-content-container: {
+          background-color: var(--paper-grey-100);
+        }
       }
-      .spinner-container {
-        position: absolute;
-        top: 0;
-        left: -6em;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+      .title {
+        width: 80%; 
+        margin: 2em 1.4em;
+        padding: 1em 0;
+        text-align: center;
+        text-transform: uppercase; 
+        border: .05em solid; 
       }
-      .cfg {
-        left: -9em;
+      .drawer-list a {
+        display: block;
+        padding: 0 1.4em;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
       }
-      paper-spinner-lite {
-        --paper-spinner-color: var(--paper-grey-900);
-        --paper-spinner-stroke-width: 2px;
-        width: 1em;
-        height: 1em;
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+        background-color: #e0e0e0;
+        border-left: .2em solid; 
       }
+      
     </style>
-
+    
     <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+          <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+           <app-route
+            route="{{subroute}}"
+            pattern="view1/:subPage"
+            data="{{subrouteData}}"
+            tail="{{tail}}"></app-route>
 
-    <div class="header">
-      <div class="container">
-        <img src="../../data/images/logo.png" alt="">
-        <p>Linterhub build info</p>
-      </div>
-    </div>
+    <app-drawer-layout>
 
-    <data-header></data-header>
+      <app-drawer slot="drawer" align="right">
+        <div class="title">Menu</div>
+        <iron-selector selected="{{page}}" attr-for-selected="name" class="drawer-list" role="navigation">
+          <a name="view1" href="/view1">View One</a>
+          <a name="view2" href="/view2">View Two</a>
+          <a name="view3" href="/view3">View Three</a>
+        </iron-selector>
+      </app-drawer>
 
-    <nav>
-      <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-        <paper-tabs selected="[[page]]" attr-for-selected="name">
-            <paper-tab link name="job-log">
-              <div hidden$="[[jobAnswer]]" class="spinner-container">
-                <paper-spinner-lite active={{!jobAnswer}}></paper-spinner-lite>
-              </div>
-              <a name="job-log" href="/job-log">Job log</a>
-            </paper-tab>
-            <paper-tab link name="view-config">
-              <div hidden$="[[cfgAnswer]]" class="spinner-container cfg">
-                <paper-spinner-lite active={{!cfgAnswer}}></paper-spinner-lite>
-              </div>
-              <a name="view-config" href="/view-config">View config</a>
-            </paper-tab>
-        </paper-tabs>
-      </iron-selector>
-    </nav>
+      <app-toolbar>
+        <img src="../../data/images/logo.png" alt="logo RM">
+        <div main-title>Linterhub build info</div>
+        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+      </app-toolbar>
 
-    <section>
-      <iron-pages
-          selected="[[page]]"
+      <sample-content size="100">
+
+        <data-header></data-header>
+
+        <iron-pages 
+          selected="{{page}}"
           attr-for-selected="name"
           fallback-selection="view404"
-          role="main">
-        <job-log
-            id="jobLog"
-            name="job-log"
-            responsed="{{jobAnswer}}"></job-log>
-        <view-config
-            name="view-config"
-            id="viewConfig"
-            responsed="{{cfgAnswer}}"></view-config>
-        <error-page name="view404">Error 404. Page  not found.</error-page>
-      </iron-pages>
-    </section>
+          role="navigation">
+
+          <view-one 
+            subroute="{{subroute}}"
+            name="view1"></view-one>
+
+          <view-two name="view2"></view-two>
+          
+          <view-three name="view3"></view-three>
+
+          </iron-pages>
+
+      </sample-content>
+
+    </app-drawer-layout>
 
   </template>
 
@@ -137,7 +126,6 @@
         return {
           page: {
             type: String,
-            observer: '_pageChanged',
           },
           connected: {
             type: Boolean,
@@ -145,41 +133,17 @@
           }
         };
       }
-
+      
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
+          '_routePageChanged(routeData.page)'
         ];
       }
 
       _routePageChanged(page) {
+        //console.log('_routePageChanged')
         if (page === undefined) return;
-        this.page = page || 'job-log';
-      }
-
-      _pageChanged(page) {
-        this._updateRequest(page);
-        var resolvedPageUrl = this.resolveUrl(page + '.html');
-        Polymer.importHref(
-          resolvedPageUrl,
-          null,
-          this._showPage404.bind(this),
-          true);
-      }
-
-      _updateRequest(page) {
-        if (page=="job-log") {
-          if(this.$.jobLog.responsed=='0'){
-            if(this.connected) return
-          }
-          this.connected = true;
-          this.$.jobLog.resetTemplate();
-          this.$.jobLog.$.buildWebSocket.generateRequest();
-        }
-        if (page=="view-config") {
-          this.$.viewConfig.errorText = '';
-          this.$.viewConfig.$.configAjax.generateRequest();
-        }
+        this.page = page || '/view1';         
       }
 
       _showPage404() {

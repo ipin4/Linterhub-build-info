@@ -64,6 +64,7 @@
         margin: 2em 1.7em;
         padding-left: 1em;
         border-left: .2em solid #757575;
+        display: inline-block
       }
       .prim-info p {
         margin: .5em 0;
@@ -78,6 +79,7 @@
       .sec-info p {
         margin: .5em 1.7em;
       }
+      
       @media screen and (max-width: 740px) {
         .path p {
           width: 80%;
@@ -87,7 +89,7 @@
     </style>
     <paper-material class="field card" elevation="1">
       <div class="path"><p><b>Repometric >> linterhub-atom >> master >> build 10 >> Rebuild</b></p></div>
-      <div class="result small-font">SUCSESS</div>
+      <div class="result small-font" onclick="[[getError]]">{{statusText}}</div>
       <div class="prim-info">
         <p>Pull request #13 - Use atom-linter v2, code refactoring</p>
         <p>Oleg Safonov</p>
@@ -107,8 +109,20 @@
       static get is() { return 'data-header'; }
 
       static get properties() {
-        return {}
+        return {
+          statusText: {
+            type: String,
+            value: 'SUCSESS'
+          }
+        }
       }
+      
+      getError() {
+        if (this.innerHTML == 'SUCSESS') this.innerHTML = 'ERROR';
+        else this.innerHTML = 'SUCSESS';
+        this.classList.toggle('error');
+      }
+
     }
 
     window.customElements.define(dataHeader.is, dataHeader);
