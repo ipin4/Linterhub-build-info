@@ -11,8 +11,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="data-header.html">
-<link rel="import" href="job-log.html">
-<link rel="import" href="view-config.html">
+<link rel="import" href="view1.html">
 <link rel="import" href="view2.html">
 <link rel="import" href="view3.html">
 <link rel="import" href="error-page.html">
@@ -63,41 +62,6 @@
         border-left: .2em solid; 
       }
       
-      paper-tabs {
-        --paper-tabs-selection-bar-color: var(--paper-grey-900);
-        --paper-tab-ink: var(--paper-grey-900);
-        -webkit-font-smoothing: antialiased;
-        width: 80%;
-        margin: 0 auto;
-      }
-      paper-tab[link] a {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        color: var(--paper-grey-900);
-        text-transform: uppercase;
-        text-decoration: none;
-      }
-      .spinner-container {
-        position: absolute;
-        top: 0;
-        left: -6em;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .cfg {
-        left: -9em;
-      }
-      paper-spinner-lite {
-        --paper-spinner-color: var(--paper-grey-900);
-        --paper-spinner-stroke-width: 2px;
-        width: 1em;
-        height: 1em;
-      }
-
     </style>
     
     <app-location route="{{route}}"></app-location>
@@ -106,11 +70,11 @@
             pattern="/:page"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
-          <app-route
+            <app-route
             route="{{subroute}}"
-            pattern="/:subData"
-            tail="{{subrouteData}}">
-          </app-route>
+            pattern="view1/:subPage"
+            data="{{subrouteData}}"
+            tail="{{tail}}"></app-route>
 
     <app-drawer-layout>
 
@@ -139,49 +103,15 @@
           fallback-selection="view404"
           role="navigation">
 
-          <view1 name="view1">
+          <view-one 
+            subroute="{{subroute}}"
+            name="view1"></view-one>
 
-            <iron-selector selected="{{subrouteData.prefix}}" attr-for-selected="name" class="drawer-list" role="navigation">
-              <paper-tabs selected="{{subrouteData.prefix}}" attr-for-selected="name">
-                <paper-tab link name="job-log">
-                  <div hidden$="[[jobAnswer]]" class="spinner-container">
-                    <paper-spinner-lite active={{!jobAnswer}}></paper-spinner-lite>
-                  </div>
-                  <a name="job-log" href="/view1/job-log">Job log</a>
-                </paper-tab>
-                <paper-tab link name="view-config">
-                  <div hidden$="[[cfgAnswer]]" class="spinner-container cfg">
-                    <paper-spinner-lite active={{!cfgAnswer}}></paper-spinner-lite>
-                  </div>
-                  <a name="view-config" href="/view1/view-config">View config</a>
-                </paper-tab>
-              </paper-tabs>
-            </iron-selector>
+          <view-two name="view2"></view-two>
+          
+          <view-three name="view3"></view-three>
 
-              <section>
-                <iron-pages
-                    selected="{{subrouteData.prefix}}"
-                    attr-for-selected="name"
-                    fallback-selection="view404">
-                  <job-log
-                      id="jobLog"
-                      name="/view1/job-log"
-                      responsed="{{jobAnswer}}"></job-log>
-                  <view-config
-                      id="viewConfig"
-                      name="/view1/view-config"
-                      responsed="{{cfgAnswer}}"></view-config>
-                  <error-page name="view404">Error 404. Page  not found.</error-page>
-                </iron-pages>
-              </section>
-
-          </view1>
-
-        <view-two name="view2"></view-two>
-        
-        <view-three name="view3"></view-three>
-
-        </iron-pages>
+          </iron-pages>
 
       </sample-content>
 
@@ -196,12 +126,6 @@
         return {
           page: {
             type: String,
-            observer: '_pageChanged',
-          },
-          subrouteData: {
-            type: String,
-            notify: true,
-            observer: '_subPageChanged'
           },
           connected: {
             type: Boolean,
@@ -212,67 +136,14 @@
       
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
-          '_updateRequest(routeData.page)'
+          '_routePageChanged(routeData.page)'
         ];
       }
 
       _routePageChanged(page) {
-        console.log('_routePageChanged')
+        //console.log('_routePageChanged')
         if (page === undefined) return;
-        
-        if (page == null) {
-          this.subrouteData.prefix == '/view1/job-log';
-          this.page = page || '/view1/job-log'; 
-          console.log(page);
-          console.log(this.subrouteData.prefix)          
-        } else {
-          this.page = page || '/view1/job-log'; 
-        }
-        
-      }
-
-      _subPageChanged() {
-        //if (this.subrouteData.prefix === null) return;
-        console.log(this.subrouteData.prefix)
-        console.log('_subPageChanged');
-      }
-
-      _pageChanged(page) {
-        //console.log('_pageChanged');
-        if (page == 'view1') {
-          if (this.subrouteData.prefix==null) {
-            this.subrouteData.prefix == '/view1/job-log';
-            var resolvedPageUrl = 'src/my-app/view1/job-log.html';
-          }
-        } else {
-            var resolvedPageUrl = this.resolveUrl(page + '.html');
-        }
-
-        Polymer.importHref(
-          resolvedPageUrl,
-          null,
-          this._showPage404.bind(this),
-          true);
-      }
-
-      _updateRequest(page) {
-        if (page === undefined) return;
-        //console.log(this.subrouteData.prefix + ' is a prefix')
-        //console.log(page + ' is url to update')
-        if (page=="view1" && this.subrouteData.prefix=='/view1/job-log') {
-          if(this.$.jobLog.responsed=='0'){
-            console.log('true')
-            if(this.connected) return
-          }
-          this.connected = true;
-          this.$.jobLog.resetTemplate();
-          this.$.jobLog.$.buildWebSocket.generateRequest();
-        }
-        if (page=="view1" && this.subrouteData.prefix=='/view1/view-config') {
-          this.$.viewConfig.errorText = '';
-          this.$.viewConfig.$.configAjax.generateRequest();
-        }
+        this.page = page || '/view1';         
       }
 
       _showPage404() {

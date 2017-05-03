@@ -1,0 +1,159 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="job-log.html">
+<link rel="import" href="view-config.html">
+<link rel="import" href="error-page.html">
+
+<dom-module id="view-one">
+  <template>
+    <style>      
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--paper-grey-900);
+        --paper-tab-ink: var(--paper-grey-900);
+        -webkit-font-smoothing: antialiased;
+        width: 80%;
+        margin: 0 auto;
+      }
+      paper-tab[link] a {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        color: var(--paper-grey-900);
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+      .spinner-container {
+        position: absolute;
+        top: 0;
+        left: -6em;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .cfg {
+        left: -9em;
+      }
+      paper-spinner-lite {
+        --paper-spinner-color: var(--paper-grey-900);
+        --paper-spinner-stroke-width: 2px;
+        width: 1em;
+        height: 1em;
+      }
+
+    </style>
+
+    <iron-selector selected="{{subPage}}" attr-for-selected="name" class="drawer-list" role="navigation">
+        <paper-tabs selected="{{subPage}}" attr-for-selected="name">
+            <paper-tab link name="/job-log">
+                <div hidden$="[[jobAnswer]]" class="spinner-container">
+                    <paper-spinner-lite active={{!jobAnswer}}></paper-spinner-lite>
+                </div>
+                <a name="/job-log" href="/view1/job-log">Job log</a>
+            </paper-tab>
+                <paper-tab link name="/view-config">
+                <div hidden$="[[cfgAnswer]]" class="spinner-container cfg">
+                    <paper-spinner-lite active={{!cfgAnswer}}></paper-spinner-lite>
+                </div>
+                <a name="/view-config" href="/view1/view-config">View config</a>
+            </paper-tab>
+        </paper-tabs>
+    </iron-selector>
+
+    <section>
+        <iron-pages
+          selected="{{subPage}}"
+          attr-for-selected="name">
+            <job-log
+              id="jobLog"
+              name="/job-log"
+              responsed="{{jobAnswer}}"></job-log>
+            <view-config
+              id="viewConfig"
+              name="/view-config"
+              responsed="{{cfgAnswer}}"></view-config>
+            <error-page name="view404">Error 404. Page  not found.</error-page>
+        </iron-pages>
+    </section>
+
+  </template>
+  <script>
+    class ViewOne extends Polymer.Element {
+      static get is() { return 'view-one'; }
+      static get properties() {
+        return {
+          subPage: {
+            type: String,
+            notify: true
+          },
+          subroute: {
+            type: Object,
+            notify: true,
+            observer: '_subroteChanged'
+          },
+          connected: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      _subroteChanged() {
+          if (this.subroute.prefix=='/view2' || this.subroute.prefix=='/view3') return;
+          if (this.subroute.path != null) {
+              this.subPage = this.subroute.path;
+              this._pageChanged();
+          }
+      }
+
+      _pageChanged() {
+        if (this.subroute.path == null) return;
+        
+        if (this.subroute.path == "") {
+          this.subPage = "/job-log";
+        }
+
+        this._updateRequest(this.subPage);
+      }
+
+      _updateRequest(subPage) {
+        if (subPage=='/job-log') {
+          if (this.$.jobLog.responsed=='0'){
+            if(this.connected) return
+          }
+          this.connected = true;
+          this.$.jobLog.resetTemplate();
+          this.$.jobLog.$.buildWebSocket.generateRequest();
+        }
+        if (subPage=='/view-config') {
+          this.$.viewConfig.errorText = '';
+          this.$.viewConfig.$.configAjax.generateRequest();
+        }
+      }
+
+      _showPage404() {
+        this.page = 'view404';
+      }
+    }
+    window.customElements.define(ViewOne.is, ViewOne);
+
+  </script>
+</dom-module>
+
+
+
+
+
+
+
