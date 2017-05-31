@@ -14,7 +14,7 @@
 <link rel="import" href="view-config.html">
 <link rel="import" href="error-page.html">
 
-<dom-module id="view-one">
+<dom-module id="build-process">
   <template>
     <style>      
       paper-tabs {
@@ -60,13 +60,13 @@
                 <div hidden$="[[jobAnswer]]" class="spinner-container">
                     <paper-spinner-lite active={{!jobAnswer}}></paper-spinner-lite>
                 </div>
-                <a name="/job-log" href="/view1/job-log">Job log</a>
+                <a name="/job-log" href="/build_process/job-log">Job log</a>
             </paper-tab>
                 <paper-tab link name="/view-config">
                 <div hidden$="[[cfgAnswer]]" class="spinner-container cfg">
                     <paper-spinner-lite active={{!cfgAnswer}}></paper-spinner-lite>
                 </div>
-                <a name="/view-config" href="/view1/view-config">View config</a>
+                <a name="/view-config" href="/build_process/view-config">View config</a>
             </paper-tab>
         </paper-tabs>
     </iron-selector>
@@ -89,8 +89,8 @@
 
   </template>
   <script>
-    class ViewOne extends Polymer.Element {
-      static get is() { return 'view-one'; }
+    class BuildProcess extends Polymer.Element {
+      static get is() { return 'build-process'; }
       static get properties() {
         return {
           subPage: {
@@ -119,11 +119,7 @@
 
       _pageChanged() {
         if (this.subroute.path == null) return;
-        
-        if (this.subroute.path == "") {
-          this.subPage = "/job-log";
-        }
-
+        if (this.subroute.path == "") this.subPage = "/job-log";
         this._updateRequest(this.subPage);
       }
 
@@ -146,7 +142,7 @@
         this.page = 'view404';
       }
     }
-    window.customElements.define(ViewOne.is, ViewOne);
+    window.customElements.define(BuildProcess.is, BuildProcess);
 
   </script>
 </dom-module>
