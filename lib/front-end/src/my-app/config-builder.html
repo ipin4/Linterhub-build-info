@@ -4,12 +4,11 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
-
-<link rel="import" href="../../bower_components/iron-demo-helpers/demo-snippet.html">
-<link rel="import" href="../../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
 <link rel="import" href="../../bower_components/neon-animation/web-animations.html">
-<link rel="import" href="../../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
-<link rel="import" href="../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 
 
 
@@ -22,13 +21,21 @@
         --primary-color: var(--paper-grey-900);
       }
       paper-dropdown-menu.custom {
-        width: 11em;
-        --paper-input-container: {
-            padding: 0;
-        };        
+        width: 13em;    
         --paper-input-container-label: {
           text-transform: capitalize;
+          color: var(--paper-grey-400);
         };
+      }
+      paper-input {
+        --paper-input-container-label: {
+            text-transform: capitalize;
+            color: var(--paper-grey-400);
+        };
+        width: 13em;
+      }
+      paper-checkbox {
+          margin: .7em 0;
       }
       .devider {
         width: 100%;
@@ -50,59 +57,16 @@
       .undercover:nth-child(odd) {
         background-color: rgba(255,255,255,.5);
       }
-      .container {
+      .container {  
         margin: .3em .5em;
-      }
-      .container input[type="text"] {
-        margin-top: .5em;
-        padding: .2em .4em;
-        background-color: rgba(255,255,255,.1);
-        border: solid .1em var(--paper-grey-300);
-        color: var(--paper-grey-700);
-        outline: none;
       }
       .item-name {
         text-transform: capitalize;
         font-weight: bold ;
       }
-      .check-container {
-        margin-top: .5em;
-        position: relative;
-        width: 30px;
-        height: 16px;
-      }
       .description {
         padding: .2em 0;
         font-size: .9em
-      }
-      input[type="checkbox"] {
-        visibility:hidden;
-        cursor: pointer;
-      }
-      input[type="checkbox"]:before {
-        visibility: visible;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        content: "";
-        width: 30px;
-        height: 16px;
-        background-color: var(--paper-grey-500);
-      }
-      input[type="checkbox"]:after {
-        visibility: visible;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        content:"";
-        width: 12px;
-        height: 12px;
-        background-color: rgba(255,255,255,.5);
-        transition: left .1s;
-      }
-      input[type="checkbox"]:checked:after {
-        left: 16px;
-        background-color: rgba(255,255,255,1);
       }
     </style>
     <iron-ajax
@@ -136,16 +100,14 @@
               <div class="container">
                 <div class="item-name">[[item.key]]</div>
                 <div class="description">[[item.description]]</div>
-                <div class="check-container">
-                  <input type="checkbox" name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged"/>
-                </div>
+                <paper-checkbox name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged">[[getSwitch(item.type)]]</paper-checkbox>
               </div>
             </template>
             <template is="dom-if" if="[[getTextInput(item.type, item.enum)]]">
               <div class="container">
                 <div class="item-name">[[item.key]]</div>
                 <div class="description">[[item.description]]</div>
-                <input type="text" name="[[item.key]]" on-blur="inputChanged">
+                <paper-input always-float-label label="[[item.key]]" on-blur="inputChanged"></paper-input>
               </div>
             </template>
           </div>
@@ -227,13 +189,15 @@
       }
 
       checkboxChanged(e) {
-        this.userConfig.options['--' + e.target.name] = e.target.checked;
+        let node = e.target;
+        (node.checked) ? node.innerHTML = 'true' :  node.innerHTML = 'false';
+        this.userConfig.options['--' + node.name] = node.checked;
         console.log(this.userConfig)
       }
 
       inputChanged(e) {
         if (e.target.value=='') return
-        this.userConfig.options['--' + e.target.name] = e.target.value;
+        this.userConfig.options['--' + e.target.label] = e.target.value;
         console.log(this.userConfig)
       }
 
