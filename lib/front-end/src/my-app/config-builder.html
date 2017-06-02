@@ -1,0 +1,243 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../../bower_components/iron-demo-helpers/demo-snippet.html">
+<link rel="import" href="../../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../../bower_components/iron-validatable-behavior/iron-validatable-behavior.html">
+
+
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="config-builder">
+  <template>
+    <style include="shared-styles">
+      :host{
+        --primary-color: var(--paper-grey-900);
+      }
+      paper-dropdown-menu.custom {
+        width: 11em;
+        --paper-input-container: {
+            padding: 0;
+        };        
+        --paper-input-container-label: {
+          text-transform: capitalize;
+        };
+      }
+      .devider {
+        width: 100%;
+        height: 2em;
+        color: var(--paper-grey-800);
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 2em;
+        background-color: #e0e0e0;
+      }
+      .undercover {
+        padding: 1em;
+        transition: background-color .7s;
+      }
+      .undercover:hover {
+        background-color: #fff !important;
+        transition: background-color .3s;
+      }
+      .undercover:nth-child(odd) {
+        background-color: rgba(255,255,255,.5);
+      }
+      .container {
+        margin: .3em .5em;
+      }
+      .container input[type="text"] {
+        margin-top: .5em;
+        padding: .2em .4em;
+        background-color: rgba(255,255,255,.1);
+        border: solid .1em var(--paper-grey-300);
+        color: var(--paper-grey-700);
+        outline: none;
+      }
+      .item-name {
+        text-transform: capitalize;
+        font-weight: bold ;
+      }
+      .check-container {
+        margin-top: .5em;
+        position: relative;
+        width: 30px;
+        height: 16px;
+      }
+      .description {
+        padding: .2em 0;
+        font-size: .9em
+      }
+      input[type="checkbox"] {
+        visibility:hidden;
+        cursor: pointer;
+      }
+      input[type="checkbox"]:before {
+        visibility: visible;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        content: "";
+        width: 30px;
+        height: 16px;
+        background-color: var(--paper-grey-500);
+      }
+      input[type="checkbox"]:after {
+        visibility: visible;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        content:"";
+        width: 12px;
+        height: 12px;
+        background-color: rgba(255,255,255,.5);
+        transition: left .1s;
+      }
+      input[type="checkbox"]:checked:after {
+        left: 16px;
+        background-color: rgba(255,255,255,1);
+      }
+    </style>
+    <iron-ajax
+        id="setConfig"
+        url="{{url}}"
+        handle-as="json"
+        loading="{{loading}}"
+        on-response="_dataConvert"
+        last-response="{{response}}"></iron-ajax>
+          
+      <div class="devider">
+        <p>[[response.title]]</p>
+      </div>   
+
+        <template is="dom-repeat" items="[[ajaxContent]]">
+          <div class="undercover">
+            <template is="dom-if" if="[[getDropdown(item.enum)]]">
+              <div class="container">
+                <div class="item-name">[[item.key]]</div>
+                <div class="description">[[item.description]]</div>
+                <paper-dropdown-menu class="custom" label="[[item.key]]" on-iron-select="dropdownChanged" horizontal-align="left">
+                    <paper-listbox slot="dropdown-content" class="dropdown-content">
+                    <template is="dom-repeat" items="[[item.enum]]">
+                        <paper-item>[[item]]</paper-item>
+                    </template>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+              </div>
+            </template>
+            <template is="dom-if" if="[[!getSwitch(item.type)]]">
+              <div class="container">
+                <div class="item-name">[[item.key]]</div>
+                <div class="description">[[item.description]]</div>
+                <div class="check-container">
+                  <input type="checkbox" name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged"/>
+                </div>
+              </div>
+            </template>
+            <template is="dom-if" if="[[getTextInput(item.type, item.enum)]]">
+              <div class="container">
+                <div class="item-name">[[item.key]]</div>
+                <div class="description">[[item.description]]</div>
+                <input type="text" name="[[item.key]]" on-blur="inputChanged">
+              </div>
+            </template>
+          </div>
+        </template>
+        
+  </template>
+  <script>
+    class configBuilder extends Polymer.Element {
+      static get is() { return 'config-builder'; }
+      static get properties() {
+        return {
+            url: {
+              type: String,
+              observer: '_gotUrl'
+            },
+            ajaxContent: {
+              type: Array,
+              value: [],
+              notify: true
+            },
+            response: {
+              type: Object
+            },
+            userConfig: {
+              type: Object,
+              value: {
+                name: '',
+                options: {
+                  
+                }
+              }
+            }
+         }
+      }
+
+      _gotUrl() {
+          this.$.setConfig.generateRequest();
+      }
+
+      _dataConvert() {
+        this.userConfig.name = this.response.title.split(' ')[0];
+        let obj = this.response.definitions.options.properties;
+        let array = [];
+        for (var index in obj) {
+          (index!='') ? obj[index].key = index.replace('--', '') : obj[index].key = 'path';
+          array.push(obj[index]);
+        }
+        this.ajaxContent = array.slice();
+      }
+
+      getDropdown(type) {
+        if (type !== undefined) {
+            return true
+        } else {
+            return false
+        }
+      }
+      
+      getSwitch(type) {
+        if (type + '' == 'null') {
+          return false
+        } else {
+          return true
+        }
+      }
+
+      getTextInput(type, notDropdown) {
+        if (type == 'string' && notDropdown == undefined) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      dropdownChanged(e) {
+        let node = e.target;
+        this.userConfig.options['--' + node.parentNode.label] = node.selectedItem.innerText;
+        console.log(this.userConfig)
+      }
+
+      checkboxChanged(e) {
+        this.userConfig.options['--' + e.target.name] = e.target.checked;
+        console.log(this.userConfig)
+      }
+
+      inputChanged(e) {
+        if (e.target.value=='') return
+        this.userConfig.options['--' + e.target.name] = e.target.value;
+        console.log(this.userConfig)
+      }
+
+    }
+    window.customElements.define(configBuilder.is, configBuilder);
+  </script>
+</dom-module>

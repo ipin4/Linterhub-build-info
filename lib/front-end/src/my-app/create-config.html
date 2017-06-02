@@ -2,119 +2,17 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="config-builder.html">
 
 <dom-module id="create-config">
   <template>
     <style include="shared-styles">
-      .devider {
-        width: 100%;
-        height: 2em;
-        color: var(--paper-grey-800);
-        text-align: center;
-        text-transform: uppercase;
-        line-height: 2em;
-        background-color: #e0e0e0;
-      }
-      .undercover {
-        padding: 1em;
-        transition: background-color .7s;
-      }
-      .undercover:hover {
-        background-color: #fff !important;
-        transition: background-color .3s;
-      }
-      .undercover:nth-child(odd) {
-        background-color: rgba(255,255,255,.5);
-      }
-      .container {
-        margin: .3em .5em;
-      }
-      .container input[type="text"] {
-        margin-top: .5em;
-        padding: .2em .4em;
-        background-color: rgba(255,255,255,.1);
-        border: solid .1em var(--paper-grey-300);
-        color: var(--paper-grey-700);
-        outline: none;
-      }
-      .item-name {
-        text-transform: capitalize;
-        font-weight: bold ;
-      }
-      .check-container {
-        margin-top: .5em;
-        position: relative;
-        width: 30px;
-        height: 16px;
-      }
-      .description {
-        padding: .2em 0;
-        font-size: .9em
-      }
-      input[type="checkbox"] {
-        visibility:hidden;
-        cursor: pointer;
-      }
-      input[type="checkbox"]:before {
-        visibility: visible;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        content: "";
-        width: 30px;
-        height: 16px;
-        background-color: var(--paper-grey-500);
-      }
-      input[type="checkbox"]:after {
-        visibility: visible;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        content:"";
-        width: 12px;
-        height: 12px;
-        background-color: rgba(255,255,255,.5);
-        transition: left .1s;
-      }
-      input[type="checkbox"]:checked:after {
-        left: 16px;
-        background-color: rgba(255,255,255,1);
-      }
     </style>
-    <iron-ajax
-        id="setConfig"
-        url="../data/json/setConfig.json"
-        handle-as="json"
-        loading="{{loading}}"
-        on-response="_dataConvert"
-        last-response="{{response}}"></iron-ajax>
         
     <paper-material elevation="1" class="card">
       <h2>Create Config</h2>   
-      <div class="devider">
-        <p>[[response.title]]</p>
-      </div>   
-        <template is="dom-repeat" items="[[ajaxContent]]">
-          <div class="undercover">
-            <template is="dom-if" if="[[!getSwitch(item.type)]]">
-              <div class="container">
-                <div class="item-name">[[item.key]]</div>
-                <div class="description">[[item.description]]</div>
-                <div class="check-container">
-                  <input type="checkbox" name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged"/>
-                </div>
-              </div>
-            </template>
-            <template is="dom-if" if="[[getButton(item.type)]]">
-              <div class="container">
-                <div class="item-name">[[item.key]]</div>
-                <div class="description">[[item.description]]</div>
-                <input type="text" name="[[item.key]]" on-blur="inputChanged">
-              </div>
-            </template>
-          </div>
-        </template>
-
+      <config-builder 
+        url="../data/json/setConfig.json"></config-builder>
     </paper-material>
   </template>
   <script>
@@ -122,60 +20,13 @@
       static get is() { return 'create-config'; }
       static get properties() {
         return {
-            ajaxContent: {
-              type: Array,
-              value: [],
-              notify: true
-            },
-            response: {
-              type: Object
-            },
-            allConfig: {
-              type: Object
-            }
+
          }
       }
 
       ready() {
         super.ready();
-        this.$.setConfig.generateRequest();
-      }
 
-      _dataConvert() {
-        this.allConfig = Object.assign(this.response);
-        let obj = this.response.definitions.options.properties;
-        let array = [];
-        for (var index in obj) {
-          (index!='') ? obj[index].key = index.replace('--', '') : obj[index].key = 'path';
-          array.push(obj[index]);
-        }
-        this.ajaxContent = array.slice();
-      }
-
-      getSwitch(value) {
-        if (value+''=='null') {
-          return false
-        } else {
-          return true
-        }
-      }
-
-      getButton(value) {
-        if (value=='string') {
-          return true
-        } else {
-          return false
-        }
-      }
-
-      checkboxChanged(e) {
-        this.allConfig.definitions.options.properties['--' + e.target.name].value = e.target.checked;
-        console.log(this.allConfig)
-      }
-
-      inputChanged(e) {
-        this.allConfig.definitions.options.properties['--' + e.target.name].value = e.target.value;
-        console.log(this.allConfig)
       }
 
     }
