@@ -1,5 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-behaviors/paper-button-behavior.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
@@ -9,6 +12,10 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 
 
@@ -28,6 +35,7 @@
         };
       }
       paper-input {
+        display: inline-block;
         --paper-input-container-label: {
             text-transform: capitalize;
             color: var(--paper-grey-400);
@@ -68,18 +76,33 @@
         padding: .2em 0;
         font-size: .9em
       }
+      paper-button {
+        margin: .7em 0;
+        border: .09em solid var(--paper-grey-400);
+      }
+      .line {
+        text-align: right;
+        border-top: .1em solid var(--paper-grey-500);
+        background-color: var(--paper-grey-300);
+      }
+      .input-block {
+        display: block;
+      }
     </style>
+    
     <iron-ajax
         id="setConfig"
         url="{{url}}"
         handle-as="json"
         loading="{{loading}}"
-        on-response="_dataConvert"
+        on-response="_dataConverter"
         last-response="{{response}}"></iron-ajax>
+
+      <array-selector id="inputArraySelector" items="{{itemsNumber}}" selected="{{inputArrayItems}}" multi></array-selector>
           
       <div class="devider">
         <p>[[response.title]]</p>
-      </div>   
+      </div>  
 
         <template is="dom-repeat" items="[[ajaxContent]]">
           <div class="undercover">
@@ -88,11 +111,11 @@
                 <div class="item-name">[[item.key]]</div>
                 <div class="description">[[item.description]]</div>
                 <paper-dropdown-menu class="custom" label="[[item.key]]" on-iron-select="dropdownChanged" horizontal-align="left">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content">
+                  <paper-listbox slot="dropdown-content" class="dropdown-content">
                     <template is="dom-repeat" items="[[item.enum]]">
-                        <paper-item>[[item]]</paper-item>
+                      <paper-item>[[item]]</paper-item>
                     </template>
-                    </paper-listbox>
+                  </paper-listbox>
                 </paper-dropdown-menu>
               </div>
             </template>
@@ -100,7 +123,7 @@
               <div class="container">
                 <div class="item-name">[[item.key]]</div>
                 <div class="description">[[item.description]]</div>
-                <paper-checkbox name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged">[[getSwitch(item.type)]]</paper-checkbox>
+                <paper-checkbox name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged"></paper-checkbox>
               </div>
             </template>
             <template is="dom-if" if="[[getTextInput(item.type, item.enum)]]">
@@ -110,8 +133,31 @@
                 <paper-input always-float-label label="[[item.key]]" on-blur="inputChanged"></paper-input>
               </div>
             </template>
+            <template is="dom-if" if="[[getTextArray(item.type)]]">
+              <div class="container">
+                <div class="item-name">[[item.key]]</div>
+                <div class="description">[[item.description]]</div>
+                <paper-icon-button icon="add-circle" drawer-toggle on-click="addInput"></paper-icon-button>
+                <span>Add Input field</span>
+                <template is="dom-repeat" items="[[inputArrayItems]]" as="inputId" id="[[item.key]]">
+                  <div class="input-block" id="[[inputId]]">
+                    <paper-input class="array" id="[[inputId]]" always-float-label label="[[item.key]]" on-blur="inputArrayChanged"></paper-input>
+                    <paper-icon-button icon="clear" drawer-toggle on-click="removeInput"></paper-icon-button>
+                  </div>
+                </template>
+                
+
+              </div>
+            </template>
           </div>
         </template>
+        <div class="undercover line">
+            <div class="container">
+                <div class="item-name">Save</div>
+                <div class="description">Click to save your config</div>
+                <paper-button on-click="getUserConfig">Save Config</paper-button>
+            </div>
+        </div>
         
   </template>
   <script>
@@ -139,20 +185,37 @@
                   
                 }
               }
+            },
+            itemsNumber: {
+              type: Array,
+              value: [],
+              notify: true
+            },
+            counter: {
+              type: Number,
+              value: 0
             }
          }
       }
 
       _gotUrl() {
-          this.$.setConfig.generateRequest();
+        this.$.setConfig.generateRequest();
       }
 
-      _dataConvert() {
+      _dataConverter() {
         this.userConfig.name = this.response.title.split(' ')[0];
         let obj = this.response.definitions.options.properties;
         let array = [];
         for (var index in obj) {
-          (index!='') ? obj[index].key = index.replace('--', '') : obj[index].key = 'path';
+          if (index!='') {
+            (index != '-version') ? obj[index].key = index.replace('--', '') : obj[index].key = index.replace('-', '')
+          } else {
+            obj[index].key = 'path';
+          }
+          if (obj[index].oneOf != undefined) {
+            let data = obj[index];
+            data.enum = data.oneOf[0].enum;
+          }
           array.push(obj[index]);
         }
         this.ajaxContent = array.slice();
@@ -182,22 +245,85 @@
         }
       }
 
+      getTextArray(type) {
+        if (type == 'array') {
+          return true 
+        } else {
+          return false
+        }
+      }
+
       dropdownChanged(e) {
         let node = e.target;
         this.userConfig.options['--' + node.parentNode.label] = node.selectedItem.innerText;
-        console.log(this.userConfig)
       }
 
       checkboxChanged(e) {
         let node = e.target;
-        (node.checked) ? node.innerHTML = 'true' :  node.innerHTML = 'false';
-        this.userConfig.options['--' + node.name] = node.checked;
-        console.log(this.userConfig)
+        if (node.checked) {
+          node.innerHTML = 'null';
+          this.userConfig.options['--' + node.name] = 'null';
+        } else {
+          node.innerHTML = '';
+          delete this.userConfig.options['--' + node.name];
+        }
       }
 
       inputChanged(e) {
-        if (e.target.value=='') return
-        this.userConfig.options['--' + e.target.label] = e.target.value;
+        var node = e.target;
+        if (node.value == undefined || e.key == 'Tab') return
+        this.userConfig.options['--' + node.label] = node.value;
+        if (node.value == '') {
+          delete this.userConfig.options['--' + node.label];
+        }
+      }
+
+      inputArrayChanged(e) {
+        let node = e.target;
+        if (node.value == undefined || e.key == 'Tab') return
+        if (this.userConfig.options['--' + node.label] == undefined) {
+          this.userConfig.options['--' + node.label] = new Array();
+        }
+        this.userConfig.options['--' + node.label] = [];
+        let allInputs = node.parentNode.parentNode.querySelectorAll('div.input-block');
+        for (let index = 0; index < allInputs.length; index++) {
+          this.userConfig.options['--' + node.label].push(allInputs[index].childNodes[1].value) 
+        }
+
+      }
+
+      addInput(e) {
+        this.counter++;
+        let indexName = 'input_' + this.counter;
+        this.itemsNumber.push(indexName);
+        this.$.inputArraySelector.select(indexName)
+      }
+
+      removeInput(e) {
+        let node = e.target;
+        let label = e.target.previousSibling.previousSibling.label;
+
+        this.itemsNumber.forEach((element, elementIndex) => {
+          if (element == node.parentNode.id) {
+            if (this.userConfig.options['--' + label] !== undefined) {
+              this.userConfig.options['--' + label].splice(elementIndex, 1);
+            }
+            this.itemsNumber.splice(elementIndex, 1);
+            this.$.inputArraySelector.deselect(element);
+          }
+        })
+        if (this.userConfig.options['--' + label] === undefined || this.userConfig.options['--' + label][0] === undefined) {
+          delete this.userConfig.options['--' + label];
+        }
+        let allInputs = node.parentNode.parentNode.querySelectorAll('div.input-block');
+        for (let index = 0; index < allInputs.length-1; index++) {
+          if (this.userConfig.options['--' + label] !== undefined) {
+            allInputs[index].childNodes[1].value = this.userConfig.options['--' + label][index]
+          }
+        }
+      }
+
+      getUserConfig() {
         console.log(this.userConfig)
       }
 

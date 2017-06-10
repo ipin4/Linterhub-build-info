@@ -163,12 +163,10 @@
         } else {
           this.responsed = 1;
         }
-
         if (data.is == 'header') {
           this.textHeaders.push(data);
           this.$.headerSelector.select(data);
         }
-
         if (data.is == 'subHeader') {
           this.textSubHeaders.push(data);
           this.$.subHeaderSelector.select(data);
