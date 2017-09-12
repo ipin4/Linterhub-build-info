@@ -5,14 +5,13 @@ It's application which represent build info.
 
 First, install [Node.js](https://nodejs.org/en/).
 Then, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed.
+After all install bower and npm dependencies.
 
 ## Viewing Your Application
 
 ```
-1 - Go to .\lib\front-end\
-2 - $ polymer serve
-3 - Go to .\lib\back-end\
-4 - $ node server.js
+1 - Run "npm start" to start server.
+2 - In another terminal run "polymer serve".
 ```
 
 ## Building Your Application

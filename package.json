@@ -1,0 +1,29 @@
+{
+  "name": "linterhub-build-info",
+  "version": "1.0.0",
+  "description": "It's app  which represent build info.",
+  "main": "webpack.config.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "eslint": "^4.0.0",
+    "node-static": "^0.7.9",
+    "stylelint-config-polymer": "^0.0.1",
+    "ws": "^3.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node ./server/www.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipin4/Linterhub-build-info.git"
+  },
+  "author": "ipin4",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ipin4/Linterhub-build-info/issues"
+  },
+  "homepage": "https://github.com/ipin4/Linterhub-build-info#readme"
+}

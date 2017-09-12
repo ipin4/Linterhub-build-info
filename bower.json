@@ -1,7 +1,7 @@
 {
   "name": "my-polymer-app",
   "description": "",
-  "main": "index.html",
+  "main": "lib/components/index.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0-rc.2",
     "paper-checkbox": "PolymerElements/paper-checkbox#2.0-preview",
