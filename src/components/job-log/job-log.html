@@ -81,12 +81,12 @@
                   <div class="selectIcon"></div>[[subheaderRoot.subheader]]
                 </div>
                 <iron-collapse id="collapse" tabindex="0">
-                  <div class="textSection">
+                  <div class="text-section">
 
                     <template is="dom-repeat" items="[[selectedText]]" as="textRoot">
                       <template is="dom-if" if="{{getText(textRoot, subheaderRoot, headerRoot)}}">
                         <div class="line clearfix">
-                          <span class="one-step number">[[getNumber()]]</span><span class="one-step">[[textRoot.text]]</span>
+                          <div class="number">[[getNumber()]]</div><div class="one-step text">[[textRoot.text]]</div>
                         </div>
                       </template>
                     </template>

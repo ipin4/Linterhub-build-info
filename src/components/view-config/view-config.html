@@ -23,11 +23,11 @@
 
     <paper-material elevation="1" class="card" hidden="{{loading}}">
       <h2>Config info</h2>
-      <div class="textSection" id="textSection">
+      <div class="text-section" id="textSection">
         <template is="dom-repeat" items=[[response.config]]>
           <div class="line clearfix">
-            <span class="one-step number">[[getNumber()]]</span>
-            <span class$="{{getClass(item.text)}}">[[item.text]]</span>
+            <div class="number">[[getNumber()]]</div>
+            <div class$="{{getClass(item.text)}}">[[item.text]]</div>
           </div>
         </template>
       </div>
