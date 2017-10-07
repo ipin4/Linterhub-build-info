@@ -1,0 +1,48 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "semi": 2,
+        "quotes": [2, "single"],
+        "no-var": 2,
+        "default-case": 2,
+        "dot-location": [2, "property"],
+        "dot-notation": 2,
+        "eqeqeq": 2,
+        "no-empty-pattern": 2,
+        "no-multi-spaces": [2, { 
+            "exceptions": { 
+                "Property": false,
+                "BinaryExpression": false
+            } 
+        }],
+        "key-spacing": [2, {
+            "mode": "strict",
+            "beforeColon": false
+        }],
+        "keyword-spacing": 2,
+        "space-infix-ops": 2,
+        "computed-property-spacing": [2, "never"],
+        "space-in-parens": [2, "never"],
+        "space-before-function-paren": [2, "always"],
+        "no-trailing-spaces": 2,
+        "semi-spacing": 2,
+        "comma-spacing": [2, { 
+                "before": false, 
+                "after": true 
+            }],
+        "no-multiple-empty-lines": [2, { 
+                "max": 1, 
+                "maxBOF": 1
+            }],
+            "padded-blocks": [2, { 
+                "blocks": "never" 
+            }],
+        "max-len": [1, 80]
+    }
+}
