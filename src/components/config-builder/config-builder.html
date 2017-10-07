@@ -8,7 +8,7 @@
         --primary-color: var(--paper-grey-900);
       }
       paper-dropdown-menu.custom {
-        width: 13em;    
+        width: 13em;
         --paper-input-container-label: {
           text-transform: capitalize;
           color: var(--paper-grey-400);
@@ -45,7 +45,7 @@
       .undercover:nth-child(odd) {
         background-color: rgba(255,255,255,.5);
       }
-      .container {  
+      .container {
         margin: .3em .5em;
       }
       .item-name {
@@ -69,7 +69,7 @@
         display: block;
       }
     </style>
-    
+
     <iron-ajax
         id="setConfig"
         url="{{url}}"
@@ -79,10 +79,10 @@
         last-response="{{response}}"></iron-ajax>
 
       <array-selector id="inputArraySelector" items="{{itemsNumber}}" selected="{{inputArrayItems}}" multi></array-selector>
-          
+
       <div class="devider">
         <p>[[response.title]]</p>
-      </div>  
+      </div>
 
         <template is="dom-repeat" items="[[ajaxContent]]">
           <div class="undercover">
@@ -103,7 +103,7 @@
               <div class="container">
                 <div class="item-name">[[item.key]]</div>
                 <div class="description">[[item.description]]</div>
-                <paper-checkbox name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged"></paper-checkbox>
+                <paper-checkbox name="[[item.key]]" checked="[[getSwitch(item.type)]]" on-change="checkboxChanged">null</paper-checkbox>
               </div>
             </template>
             <template is="dom-if" if="[[getTextInput(item.type, item.enum)]]">
@@ -125,7 +125,7 @@
                     <paper-icon-button icon="clear" drawer-toggle on-click="removeInput"></paper-icon-button>
                   </div>
                 </template>
-                
+
 
               </div>
             </template>
@@ -138,176 +138,7 @@
                 <paper-button on-click="getUserConfig">Save Config</paper-button>
             </div>
         </div>
-        
+
   </template>
-  <script>
-    class configBuilder extends Polymer.Element {
-      static get is() { return 'config-builder'; }
-      static get properties() {
-        return {
-            url: {
-              type: String,
-              observer: '_gotUrl'
-            },
-            ajaxContent: {
-              type: Array,
-              value: [],
-              notify: true
-            },
-            response: {
-              type: Object
-            },
-            userConfig: {
-              type: Object,
-              value: {
-                name: '',
-                options: {
-                  
-                }
-              }
-            },
-            itemsNumber: {
-              type: Array,
-              value: [],
-              notify: true
-            },
-            counter: {
-              type: Number,
-              value: 0
-            }
-         }
-      }
-
-      _gotUrl() {
-        this.$.setConfig.generateRequest();
-      }
-
-      _dataConverter() {
-        this.userConfig.name = this.response.title.split(' ')[0];
-        let obj = this.response.definitions.options.properties;
-        let array = [];
-        for (var index in obj) {
-          if (index!='') {
-            (index != '-version') ? obj[index].key = index.replace('--', '') : obj[index].key = index.replace('-', '')
-          } else {
-            obj[index].key = 'path';
-          }
-          if (obj[index].oneOf != undefined) {
-            let data = obj[index];
-            data.enum = data.oneOf[0].enum;
-          }
-          array.push(obj[index]);
-        }
-        this.ajaxContent = array.slice();
-      }
-
-      getDropdown(type) {
-        if (type !== undefined) {
-            return true
-        } else {
-            return false
-        }
-      }
-      
-      getSwitch(type) {
-        if (type + '' == 'null') {
-          return false
-        } else {
-          return true
-        }
-      }
-
-      getTextInput(type, notDropdown) {
-        if (type == 'string' && notDropdown == undefined) {
-          return true
-        } else {
-          return false
-        }
-      }
-
-      getTextArray(type) {
-        if (type == 'array') {
-          return true 
-        } else {
-          return false
-        }
-      }
-
-      dropdownChanged(e) {
-        let node = e.target;
-        this.userConfig.options['--' + node.parentNode.label] = node.selectedItem.innerText;
-      }
-
-      checkboxChanged(e) {
-        let node = e.target;
-        if (node.checked) {
-          node.innerHTML = 'null';
-          this.userConfig.options['--' + node.name] = 'null';
-        } else {
-          node.innerHTML = '';
-          delete this.userConfig.options['--' + node.name];
-        }
-      }
-
-      inputChanged(e) {
-        var node = e.target;
-        if (node.value == undefined || e.key == 'Tab') return
-        this.userConfig.options['--' + node.label] = node.value;
-        if (node.value == '') {
-          delete this.userConfig.options['--' + node.label];
-        }
-      }
-
-      inputArrayChanged(e) {
-        let node = e.target;
-        if (node.value == undefined || e.key == 'Tab') return
-        if (this.userConfig.options['--' + node.label] == undefined) {
-          this.userConfig.options['--' + node.label] = new Array();
-        }
-        this.userConfig.options['--' + node.label] = [];
-        let allInputs = node.parentNode.parentNode.querySelectorAll('div.input-block');
-        for (let index = 0; index < allInputs.length; index++) {
-          this.userConfig.options['--' + node.label].push(allInputs[index].childNodes[1].value) 
-        }
-
-      }
-
-      addInput(e) {
-        this.counter++;
-        let indexName = 'input_' + this.counter;
-        this.itemsNumber.push(indexName);
-        this.$.inputArraySelector.select(indexName)
-      }
-
-      removeInput(e) {
-        let node = e.target;
-        let label = e.target.previousSibling.previousSibling.label;
-
-        this.itemsNumber.forEach((element, elementIndex) => {
-          if (element == node.parentNode.id) {
-            if (this.userConfig.options['--' + label] !== undefined) {
-              this.userConfig.options['--' + label].splice(elementIndex, 1);
-            }
-            this.itemsNumber.splice(elementIndex, 1);
-            this.$.inputArraySelector.deselect(element);
-          }
-        })
-        if (this.userConfig.options['--' + label] === undefined || this.userConfig.options['--' + label][0] === undefined) {
-          delete this.userConfig.options['--' + label];
-        }
-        let allInputs = node.parentNode.parentNode.querySelectorAll('div.input-block');
-        for (let index = 0; index < allInputs.length-1; index++) {
-          if (this.userConfig.options['--' + label] !== undefined) {
-            allInputs[index].childNodes[1].value = this.userConfig.options['--' + label][index]
-          }
-        }
-      }
-
-      getUserConfig() {
-        console.log(this.userConfig)
-      }
-
-    }
-    window.customElements.define(configBuilder.is, configBuilder);
-  </script>
+  <script src="config-builder.js"></script>
 </dom-module>

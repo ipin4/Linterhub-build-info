@@ -6,14 +6,14 @@
 <link rel="import" href="view3/view3.html">
 <link rel="import" href="error-page/error-page.html">
 
-<dom-module id="my-app">
+<dom-module id="main-page">
   <template>
     <style include="shared-styles"></style>
     <style>
       app-toolbar {
         width: 100%;
         height: 4em;
-        padding: 0 1em; 
+        padding: 0 1em;
         background-color: rgb(230,230,230);
         margin-bottom: 2em;
       }
@@ -32,12 +32,12 @@
         }
       }
       .title {
-        width: 80%; 
+        width: 80%;
         margin: 2em 1.4em;
         padding: 1em 0;
         text-align: center;
-        text-transform: uppercase; 
-        border: .05em solid; 
+        text-transform: uppercase;
+        border: .05em solid;
       }
       .drawer-list a {
         display: block;
@@ -50,11 +50,11 @@
         color: black;
         font-weight: bold;
         background-color: #e0e0e0;
-        border-left: .2em solid; 
+        border-left: .2em solid;
       }
-      
+
     </style>
-    
+
     <app-location route="{{route}}"></app-location>
           <app-route
             route="{{route}}"
@@ -88,18 +88,18 @@
 
         <data-header></data-header>
 
-        <iron-pages 
+        <iron-pages
           selected="{{page}}"
           attr-for-selected="name"
           fallback-selection="view404"
           role="navigation">
 
-          <build-process 
+          <build-process
             subroute="{{subroute}}"
             name="build_process"></build-process >
 
           <create-config name="create_config"></create-config>
-          
+
           <view-three name="view3"></view-three>
 
           </iron-pages>
@@ -109,39 +109,5 @@
     </app-drawer-layout>
 
   </template>
-
-  <script>
-    class MainPage extends Polymer.Element {
-      static get is() { return 'my-app'; }
-      static get properties() {
-        return {
-          page: {
-            type: String,
-          },
-          connected: {
-            type: Boolean,
-            value: false
-          }
-        };
-      }
-      
-      static get observers() {
-        return [
-          '_routePageChanged(routeData.page)'
-        ];
-      }
-
-      _routePageChanged(page) {
-        //console.log('_routePageChanged')
-        if (page === undefined) return;
-        this.page = page || '/build_process';         
-      }
-
-      _showPage404() {
-        this.page = 'view404';
-      }
-    }
-    window.customElements.define(MainPage.is, MainPage);
-
-  </script>
+  <script src="main-page.js"></script>
 </dom-module>

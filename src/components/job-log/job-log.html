@@ -55,7 +55,7 @@
         outline: none;
       }
     </style>
-    
+
     <web-socket
       id="buildWebSocket"
       url="ws://localhost:8082"
@@ -77,7 +77,7 @@
 
             <template id="subHeaderTemplate" is="dom-repeat" items="{{selectedSubHeaders}}" as="subheaderRoot">
               <template is="dom-if" if="{{getSubHeader(subheaderRoot, headerRoot)}}">
-                <div class="section" aria-controls="collapse" on-click="toggle">
+                <div class="section" aria-controls="collapse" on-click="toggle(this)">
                   <div class="selectIcon"></div>[[subheaderRoot.subheader]]
                 </div>
                 <iron-collapse id="collapse" tabindex="0">
@@ -102,120 +102,5 @@
     </template>
 
   </template>
-
-  <script>
-    class JobLog extends Polymer.Element {
-      static get is() { return 'job-log'; }
-      static get properties() {
-        return {
-          lineNumber: {
-            type: Number,
-            value: 0
-          },
-          responsed: {
-            type: String,
-            notify: true,
-            reflectToAttribute: true
-          },
-          textHeaders: {
-            type: Array,
-            value: []
-          },
-          textSubHeaders: {
-            type: Array,
-            value: []
-          },
-          textConsole: {
-            type: Array,
-            value: []
-          },
-          errorText: {
-            type: String,
-            notify: true
-          }
-        }
-      }
-
-      startLoadData() {
-        this.responsed = 0;
-      }
-
-      getError(event) {
-        if (event.type == 'closed') {
-          this.errorText = 'Server is do not respond';
-        } else {
-          this.errorText = event.detail;
-        }
-        this.responsed = 1;
-      }
-
-      getData(responseAnswer) {
-        var data = responseAnswer.detail.text
-
-        if (data.is != "done") {
-          this.responsed = 0;
-        } else {
-          this.responsed = 1;
-        }
-        if (data.is == 'header') {
-          this.textHeaders.push(data);
-          this.$.headerSelector.select(data);
-        }
-        if (data.is == 'subHeader') {
-          this.textSubHeaders.push(data);
-          this.$.subHeaderSelector.select(data);
-        }
-        if (data.is == 'text') {
-          this.textConsole.push(data);
-          this.$.textSelector.select(data);
-        }
-      }
-
-      getSubHeader(subheaderRoot, headerRoot) {
-        if(subheaderRoot.currentHeader==headerRoot.header){
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      getText(textRoot, subheaderRoot, headerRoot) {
-        if( textRoot.currentHeader==headerRoot.header&&
-            textRoot.currentSubheader==subheaderRoot.subheader) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      resetTemplate() {
-        this.lineNumber = 0;
-        this.errorText = '';
-        this.textHeaders.splice(0, this.textHeaders.length);
-        this.textSubHeaders.splice(0, this.textSubHeaders.length);
-        this.textConsole.splice(0, this.textConsole.length);
-        this.$.headerSelector.clearSelection();
-        this.$.subHeaderSelector.clearSelection();
-        this.$.textSelector.clearSelection();
-      }
-
-      getNumber() {
-        return ++this.lineNumber;
-      }
-
-      toggle(e) {
-        var collapseElement = e.target.nextElementSibling;
-        var rotateElement = e.target.childNodes[1];
-        if (collapseElement === null) {
-          rotateElement = e.target;
-          collapseElement = rotateElement.parentNode.nextElementSibling;
-        }
-        collapseElement.toggle()
-        rotateElement.classList.toggle('rotation');
-      }
-
-    }
-
-    window.customElements.define(JobLog.is, JobLog);
-  </script>
+  <script src="job-log.js"></script>
 </dom-module>

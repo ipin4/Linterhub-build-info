@@ -5,22 +5,12 @@
   <template>
     <style include="shared-styles">
     </style>
-        
+
     <paper-material elevation="1" class="card">
-      <h2>Create Config</h2>   
-      <config-builder 
+      <h2>Create Config</h2>
+      <config-builder
         url="../data/json/setConfig.json"></config-builder>
     </paper-material>
   </template>
-  <script>
-    class createConfig extends Polymer.Element {
-      static get is() { return 'create-config'; }
-      static get properties() {
-        return {
-         }
-      }
-
-    }
-    window.customElements.define(createConfig.is, createConfig);
-  </script>
+  <script src="create-config.js"></script>
 </dom-module>
