@@ -3,8 +3,8 @@
 <link rel="import" href="data-header/data-header.html">
 <link rel="import" href="build-process/build-process.html">
 <link rel="import" href="create-config/create-config.html">
-<link rel="import" href="view3/view3.html">
 <link rel="import" href="error-page/error-page.html">
+<link rel="import" href="show-issues/show-issues.html">
 
 <dom-module id="main-page">
   <template>
@@ -72,9 +72,9 @@
       <app-drawer slot="drawer" align="right">
         <div class="title">Menu</div>
         <iron-selector selected="{{page}}" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="build_process" href="/build_process">Build Process</a>
           <a name="create_config" href="/create_config">Create Config</a>
-          <a name="view3" href="/view3">View Three</a>
+          <a name="build_process" href="/build_process">Build Process</a>
+          <a name="show_issues" href="/show_issues">Show Issues</a>
         </iron-selector>
       </app-drawer>
 
@@ -96,13 +96,13 @@
 
           <build-process
             subroute="{{subroute}}"
-            name="build_process"></build-process >
+            name="build_process"/></build-process >
 
           <create-config name="create_config"></create-config>
 
-          <view-three name="view3"></view-three>
+          <show-issues name="show_issues"></show-issues>
 
-          </iron-pages>
+        </iron-pages>
 
       </sample-content>
 

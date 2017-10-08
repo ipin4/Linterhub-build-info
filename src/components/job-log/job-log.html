@@ -77,7 +77,7 @@
 
             <template id="subHeaderTemplate" is="dom-repeat" items="{{selectedSubHeaders}}" as="subheaderRoot">
               <template is="dom-if" if="{{getSubHeader(subheaderRoot, headerRoot)}}">
-                <div class="section" aria-controls="collapse" on-click="toggle(this)">
+                <div class="section" aria-controls="collapse" on-click="toggle">
                   <div class="selectIcon"></div>[[subheaderRoot.subheader]]
                 </div>
                 <iron-collapse id="collapse" tabindex="0">
