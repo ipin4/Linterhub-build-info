@@ -1,0 +1,21 @@
+<link rel="import" href="./../styles/shared-styles.html">
+
+<dom-module id="info-card">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+    </style>
+    <template is="dom-if" if="{{haveMessage}}">
+      <paper-material elevation="1" class="card">
+        <template is="dom-if" if="{{messageList.introMessage}}">
+          <h2>Welcome to Repometric!</h2>
+          <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</div>
+          <paper-button
+            on-click="_closeMessage"
+            >Got It</paper-button>
+        </template>
+      </paper-material>
+    </template>
+  </template>
+  <script src="info-card.js"></script>
+</dom-module>
