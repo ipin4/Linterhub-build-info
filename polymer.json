@@ -1,8 +1,8 @@
 {
   "entrypoint": "src/index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/components/linterhub-app.html",
   "fragments": [
-    "src/my-app.html",
+    "src/components/linterhub-app.html",
     "src/components/my-app/job-log.html",
     "src/components/my-app/shared-styles.html",
     "src/components/my-app/view-config.html"

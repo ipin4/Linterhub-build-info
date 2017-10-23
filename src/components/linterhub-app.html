@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./../components/styles/shared-styles.html">
+<link rel="import" href="./../components/user-page/user-page.html">
+<link rel="import" href="./../components/repo-list/repo-list.html">
+<link rel="import" href="./../components/info-card/info-card.html">
+
+<dom-module id="linterhub-app">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      app-toolbar {
+        width: 100%;
+        height: 4em;
+        padding: 0 1em;
+        background-color: rgb(230,230,230);
+        margin-bottom: 2em;
+      }
+      app-toolbar img {
+        height: 56%;
+        width: auto;
+        margin-right: 1em;
+      }
+      app-toolbar span {
+        font-size: .7em;
+        color: var(--paper-grey-600);
+      }
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+      app-drawer {
+        --app-drawer-width: 210px;
+        --app-drawer-content-container: {
+          background-color: var(--paper-grey-100);
+        }
+      }
+    </style>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
+    <app-route
+      route="{{subroute}}"
+      pattern="/:subPage"
+      data="{{subrouteData}}"
+      tail="{{anotherTail}}"></app-route>
+
+    <app-toolbar>
+      <img src="../../data/images/logo.png" alt="logo RM">
+      <div>
+        <div main-title>Linterhub build info</div>
+        <template is="dom-if" if="{{userRegistred}}">
+          <span>Signed as
+            <a href="https://github.com/{{userData.login}}">
+            {{userData.login}}</a></span>
+        </template>
+      </div>
+    </app-toolbar>
+
+    <app-drawer-layout>
+      <sample-content size="100">
+
+        <info-card
+          message-list="{{messageList}}"></info-card>
+
+        <iron-pages
+          selected="{{page}}"
+          attr-for-selected="name"
+          fallback-selection="view404"
+          role="navigation">
+
+          <user-page
+            id="user-page"
+            name="signin"
+            route="{{route}}"
+            user-registred="{{userRegistred}}"
+            user-data="{{userData}}"></user-page>
+          <repo-list name="repos"></repo-list>
+
+        </iron-pages>
+      </sample-content>
+    </app-drawer-layout>
+  </template>
+  <script src="linterhub-app.js"></script>
+</dom-module>
