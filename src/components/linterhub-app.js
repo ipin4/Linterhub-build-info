@@ -2,31 +2,24 @@ class LinterhubApp extends Polymer.Element {
   static get is () { return 'linterhub-app'; }
   static get properties () {
     return {
-      page: {
-        type: String,
-        notify: true
-      },
-      subPage: {
-        type: String,
-        notify: true
-      },
       userData: {
         type: Object,
-        value: null
       },
       userRegistred: {
-        type: Boolean,
-        value: false
+        type: Boolean
       },
       messageList: {
         type: Object,
-        value: {}
+        value: {
+          introMessage: true
+        }
       }
     };
   }
 
   ready () {
     super.ready();
+    this.routePageChanged('/signin');
     this.setUserViewConfig();
   }
 
@@ -47,10 +40,6 @@ class LinterhubApp extends Polymer.Element {
       this.getLocalUserData('messageList');
     if (messageList) {
       this.messageList = messageList;
-    } else {
-      this.messageList = {
-        introMessage: true
-      };
     }
   }
 
@@ -60,23 +49,16 @@ class LinterhubApp extends Polymer.Element {
     if (userData) {
       this.userData = userData;
       this.userRegistred = true;
-      this.set('this.page', '/repos');
+      this.routePageChanged('/repos');
     }
   }
 
-  _routePageChanged (page) {
-    !page ? window.location.pathname = '/signin' :
-      this.page = page;
+  routePageChanged (page) {
+    this.set('route.path', page);
   }
 
   _showPage404 () {
-    this.page = 'view404';
-  }
-
-  static get observers () {
-    return [
-      '_routePageChanged(routeData.page)'
-    ];
+    this.set('route.path', '/view404');
   }
 
 }

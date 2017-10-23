@@ -1,0 +1,71 @@
+<link rel="import" href="./../styles/shared-styles.html">
+
+<dom-module id="user-page">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      form {
+        padding: 2em;
+        border: .1em solid var(--dark-theme-divider-color);
+      }
+      paper-input {
+        max-width: 15em;
+      }
+      form {
+        max-width: 17em;
+      }
+      form div {
+        margin-bottom: 1em;
+      }
+      .container {
+        display: flex;
+        flex-direction: row;
+      }
+      .left {
+        width: 70%;
+        padding: 0 2em;
+        box-sizing: border-box;
+      }
+      .left h2 {
+        max-width: 5em;
+        font-size: 36px;
+      }
+      .left div {
+        max-width: 19em;
+      }
+      .right {
+        widows: 30%
+      }
+    </style>
+      <paper-material elevation="1" class="card">
+        <div class="container">
+          <div class="left">
+            <h2>Improve your lint experience</h2>
+            <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</div>
+          </div>
+          <div class="right">
+            <iron-form>
+              <form action="/foo" method="get">
+                <h2>Please, sign in.</h2>
+                <div>To use our service please sign in and proceed with your GitHub account.</div>
+                <paper-input
+                  id="login"
+                  label="Username or email address"
+                  name="login"
+                  on-change="setValue"></paper-input>
+                <paper-input
+                  id="password"
+                  label="Password"
+                  name="password"
+                  on-change="setValue"></paper-input>
+                <paper-button
+                  on-click="submit"
+                  disabled="[[isDisable]]">Sign in</paper-button>
+              </form>
+              </iron-form>
+          </div>
+        </div>
+      </paper-material>
+  </template>
+  <script src="user-page.js"></script>
+</dom-module>
