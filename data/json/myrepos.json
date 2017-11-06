@@ -4,7 +4,7 @@
       "owner": {
         "login": "octocat",
         "id": 1,
-        "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+        "avatar_url": "https://github.com/identicons/cb82e67691313959335bfed01089f85c.png",
         "gravatar_id": "",
         "url": "https://api.github.com/users/octocat",
         "html_url": "https://github.com/octocat",
@@ -20,8 +20,8 @@
         "type": "User",
         "site_admin": false
       },
-      "name": "Hello-World",
-      "full_name": "octocat/Hello-World",
+      "name": "First repo",
+      "full_name": "octocat/First repo",
       "description": "This your first repo!",
       "private": false,
       "fork": false,
@@ -33,7 +33,7 @@
         "owner": {
           "login": "octocat",
           "id": 2,
-          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "avatar_url": "https://github.com/identicons/cb82e67691313959335bfed01089f85c.png",
           "gravatar_id": "",
           "url": "https://api.github.com/users/octocat",
           "html_url": "https://github.com/octocat",
@@ -62,7 +62,7 @@
         "owner": {
           "login": "octocat",
           "id": 3,
-          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "avatar_url": "https://github.com/identicons/cb82e67691313959335bfed01089f85c.png",
           "gravatar_id": "",
           "url": "https://api.github.com/users/octocat",
           "html_url": "https://github.com/octocat",

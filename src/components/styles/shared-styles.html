@@ -25,8 +25,16 @@
         width: 80%;
         margin: 1em auto;
         padding: 1.2em;
-        color: #757575;
+        color: var(--light-theme-divider-color);
         background-color: var(--paper-grey-100);
+      }
+      .link {
+        transition: all 1s;
+      }
+      .link:hover {
+        cursor: pointer;
+        background-color: var(--paper-grey-50);
+        transition: all .1s;
       }
       .inline {
         display: inline-block;
@@ -36,6 +44,16 @@
         font-weight: normal;
         text-transform: capitalize;
         color: var(--dark-theme-divider-color);
+      }
+      .small-font {
+        font-size: .8em;
+      }
+      .middle-font {
+        font-size: .9em;
+      }
+      .gray-box {
+        background-color: var(--paper-grey-300);
+        padding: .3em .5em;
       }
       .overlay {
         position: absolute;
@@ -101,6 +119,51 @@
         line-height: 2em;
         background-color: #e0e0e0;
       }
+      /* Result status shape */
+      .result {
+          position: absolute;
+          top: 2.18em;
+          right: -.5em;
+          color: white;
+          width: 7em;
+          line-height: 2em;
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: bold;
+          transform: rotate(45deg);
+          background-color: var(--google-green-500);
+        }
+        .result:before {
+          position: absolute;
+          left: -1.1em;
+          top:.05em;
+          content: "";
+          transform: rotate(-135deg);
+          border-right: 1.37em solid var(--google-green-500);
+          border-top: 1.37em solid rgba(255,255,255,0);
+          border-bottom: 1.37em solid rgba(255,255,255,0);
+        }
+        .result:after {
+          position: absolute;
+          right: -1.1em;
+          top:.05em;
+          content: "";
+          transform: rotate(-44deg);
+          border-right: 1.39em solid var(--google-green-500);
+          border-top: 1.39em solid rgba(255,255,255,0);
+          border-bottom: 1.39em solid rgba(255,255,255,0);
+        }
+        .error {
+          background-color: var(--paper-deep-orange-a700);
+        }
+        .error:before {
+          border-right: 1.37em solid var(--paper-deep-orange-a700);
+        }
+        .error:after {
+          border-right: 1.39em solid var(--paper-deep-orange-a700);
+        }
+
+      /* Main media */
       @media screen and (max-width: 732px) {
         .one-step, .two-step {
           width: 80%;

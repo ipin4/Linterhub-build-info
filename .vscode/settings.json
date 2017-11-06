@@ -1,0 +1,7 @@
+{
+    "workbench.startupEditor": "newUntitledFile",
+    "window.zoomLevel": 0,
+    "eslint.options": {
+        "configFile": ".eslintrc" 
+    }
+}
