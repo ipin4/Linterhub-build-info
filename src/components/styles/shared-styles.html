@@ -2,6 +2,7 @@
 <dom-module id="shared-styles">
   <template>
     <style>
+      /*Main styles*/
       a {
         color: var(--paper-grey-900);
       }
@@ -153,6 +154,7 @@
           border-top: 1.39em solid rgba(255,255,255,0);
           border-bottom: 1.39em solid rgba(255,255,255,0);
         }
+
         .error {
           background-color: var(--paper-deep-orange-a700);
         }
@@ -161,6 +163,16 @@
         }
         .error:after {
           border-right: 1.39em solid var(--paper-deep-orange-a700);
+        }
+
+        .build {
+          background-color: var(--paper-grey-400);
+        }
+        .build:before {
+          border-right: 1.37em solid var(--paper-grey-400);
+        }
+        .build:after {
+          border-right: 1.39em solid var(--paper-grey-400);
         }
 
       /* Main media */

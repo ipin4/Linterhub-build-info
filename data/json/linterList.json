@@ -1,0 +1,23 @@
+[
+  {
+    "repoId": 1296269,
+    "linterNames": [
+      "JSHint", "ESLint", "PYlint", "CoffeeLint"
+    ],
+    "buildIsDone": true
+  },
+  {
+    "repoId": 8769887,
+    "linterNames": [
+      "JSHint", "PYlint", "CoffeeLint"
+    ],
+    "buildIsDone": false
+  },
+  {
+    "repoId": 12378954,
+    "linterNames": [
+      "JSHint", "ESLint", "PYlint", "CoffeeLint", "TSlint"
+    ],
+    "buildIsDone": false
+  }
+]

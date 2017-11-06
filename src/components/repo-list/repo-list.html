@@ -3,14 +3,65 @@
 <dom-module id="repo-list">
   <template>
     <style include="shared-styles"></style>
-    <style>
+    <style is="custom-style">
+      .item-content {
+        color: var(--paper-grey-600);
+        padding: 0 .5em;
+        width: 33.3%;
+      }
+      .item-name {
+        margin: .4em 0 1em 0;
+      }
+      iron-list {
+        margin: 0 auto;
+      }
     </style>
-    <paper-material elevation="1" class="card">
-      <iron-list items="[[items]]">
-        <template>
-        </template>
-      </iron-list>
-    </paper-material>
+    <iron-ajax
+      id="getRepoList"
+      url="{{url}}"
+      handle-as="json"
+      loading="{{isLoading}}"
+      on-response="_loadingIsDone"
+      last-response="{{responseData}}"></iron-ajax>
+
+      <array-selector
+        id="repoSelector"
+        items="{{repoData}}"
+        selected="{{selectedRepoData}}"
+        multi></array-selector>
+      <array-selector
+        id="linterSelector"
+        items="{{linterData}}"
+        selected="{{selectedLinterData}}"
+        multi></array-selector>
+
+      <template is="dom-repeat" items="[[selectedRepoData]]" as="itemRepoData">
+        <paper-material
+          id="[[itemRepoData.id]]"
+          class="card col-2 link"
+          elevation="1"
+          on-click="openRepoById">
+          <div class="item-content">
+            <template is="dom-repeat" items="[[selectedLinterData]]" as="itemLinterData">
+              <template is="dom-if" if="[[getLintersList(itemRepoData.id, itemLinterData.repoId)]]">
+                <template is="dom-if" if="[[itemLinterData.buildIsDone]]">
+                  <div class="result success small-font">complete</div>
+                </template>
+                <template is="dom-if" if="[[!itemLinterData.buildIsDone]]">
+                    <div class="result build small-font">build</div>
+                  </template>
+              </template>
+            </template>
+            <h2><a href="[[itemRepoData.html_url]]">[[itemRepoData.name]]</a></h2>
+            <div class="small-font">Linters list:</div>
+            <template is="dom-repeat" items="[[selectedLinterData]]" as="itemLinterData">
+              <template is="dom-if" if="[[getLintersList(itemRepoData.id, itemLinterData.repoId)]]">
+                <div class="item-name">[[itemLinterData.linterNames]]</div>
+              </template>
+            </template>
+          </div>
+        </paper-material>
+      </template>
   </template>
   <script src="repo-list.js"></script>
 </dom-module>
